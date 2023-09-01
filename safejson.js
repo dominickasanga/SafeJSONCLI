@@ -1,5 +1,12 @@
 const fs = require('fs');
 const crypto = require('crypto');
+const path = require('path');
+
+function ensureDirectoryExists(directory) {
+  if (!fs.existsSync(directory)) {
+    fs.mkdirSync(directory, { recursive: true });
+  }
+}
 
 function encrypt(inputFile, outputFile, encryptionKey) {
   try {
@@ -11,11 +18,16 @@ function encrypt(inputFile, outputFile, encryptionKey) {
     let encryptedData = cipher.update(dataToEncrypt, 'utf8', 'hex');
     encryptedData += cipher.final('hex');
 
+    // Ensure the directory for the output file exists
+    const outputDir = path.dirname(outputFile);
+    ensureDirectoryExists(outputDir);
+
     fs.writeFileSync(outputFile, encryptedData, 'utf8');
 
     console.log(`JSON data encrypted and saved to ${outputFile}`);
   } catch (error) {
     console.error('Encryption failed:', error);
+    throw error; // Re-throw the error to indicate failure
   }
 }
 
@@ -28,11 +40,16 @@ function decrypt(inputFile, outputFile, decryptionKey) {
     let decryptedData = decipher.update(encryptedData, 'hex', 'utf8');
     decryptedData += decipher.final('utf8');
 
+    // Ensure the directory for the output file exists
+    const outputDir = path.dirname(outputFile);
+    ensureDirectoryExists(outputDir);
+
     fs.writeFileSync(outputFile, decryptedData, 'utf8');
 
     console.log(`JSON data decrypted and saved to ${outputFile}`);
   } catch (error) {
     console.error('Decryption failed:', error);
+    throw error; // Re-throw the error to indicate failure
   }
 }
 
