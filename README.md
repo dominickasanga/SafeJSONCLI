@@ -8,6 +8,14 @@ SafeJSON CLI is a command-line tool for securely encrypting and decrypting JSON 
 - Decrypt previously encrypted JSON files.
 - Simple command-line interface for ease of use.
 
+## Installation
+
+
+
+- git clone https://github.com/dominickasanga/SafeJSONCLI.git
+- cd safejson-cli
+- npm install
+
 ## Usage
 
 To encrypt a JSON file:
