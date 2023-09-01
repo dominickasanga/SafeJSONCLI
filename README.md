@@ -14,3 +14,5 @@ To encrypt a JSON file:
 
 ```shell
 ./safejson-cli.js encrypt input.json encrypted.json your-secret-key
+
+
