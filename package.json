@@ -1,0 +1,15 @@
+{
+  "name": "safejsoncli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Dominic Kasanga <dominickasanga@gmail.com> https://github.com/dominickasanga www.linkedin.com/in/dominickasanga",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^11.0.0"
+  }
+}
