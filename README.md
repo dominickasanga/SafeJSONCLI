@@ -35,6 +35,11 @@ To decrypt a JSON file:
 ```shell
 ./safejson-cli.js decrypt encrypted.json decrypted.json your-secret-key
 ```
+To decrypt a JSON file and get the output in cli:
+
+```shell
+./safejson-cli.js getDecryptedContents encrypted.json your-secret-secret
+```
 
 ### how to use it in your node app:
 
@@ -51,9 +56,12 @@ safejson.encrypt('input.json', 'encrypted.json', 'your-secret-key');
 // to decrypt json file
 safejson.decrypt('encrypted.json', 'decrypted.json', 'your-secret-key');
 
+// to decrypt json file
+safejson.getDecryptedContents('encrypted.json', 'your-secret-key');
+
 ```
 
-## Contributing
+## Contributing 
 
 We welcome contributions! Please read our contribution guidelines for details.
 

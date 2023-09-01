@@ -35,7 +35,7 @@ function decrypt(inputFile, outputFile, decryptionKey) {
   try {
     const encryptedData = fs.readFileSync(inputFile, 'utf8');
 
-    const decipher = crypto.createDecipher('aes-256-cbc', decryptionKey);
+    const decipher = crypto.createDecipheriv('aes-256-cbc', decryptionKey);
 
     let decryptedData = decipher.update(encryptedData, 'hex', 'utf8');
     decryptedData += decipher.final('utf8');
@@ -53,4 +53,20 @@ function decrypt(inputFile, outputFile, decryptionKey) {
   }
 }
 
-module.exports = { encrypt, decrypt };
+function getDecryptedContents(inputFile, decryptionKey) {
+  try {
+    const encryptedData = fs.readFileSync(inputFile, 'utf8');
+
+    const decipher = crypto.createDecipheriv('aes-256-cbc', decryptionKey);
+
+    let decryptedData = decipher.update(encryptedData, 'hex', 'utf8');
+    decryptedData += decipher.final('utf8');
+
+    return decryptedData;
+  } catch (error) {
+    console.error('Failed to retrieve decrypted contents:', error);
+    throw error; // Re-throw the error to indicate failure
+  }
+}
+
+module.exports = { encrypt, decrypt, getDecryptedContents };
