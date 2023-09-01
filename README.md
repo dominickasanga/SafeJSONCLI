@@ -23,6 +23,8 @@ This project is licensed under the MIT License.
 
 ## Usage
 
+### for cli:
+
 To encrypt a JSON file:
 
 ```shell
@@ -32,6 +34,23 @@ To decrypt a JSON file:
 
 ```shell
 ./safejson-cli.js decrypt encrypted.json decrypted.json your-secret-key
+```
+
+### how to use it in your node app:
+
+```shell
+npm i safejsoncli
+```
+
+```shell
+const safejson = require('safejsoncli');
+
+// to encrypt json file
+safejson.encrypt('input.json', 'encrypted.json', 'your-secret-key');
+
+// to decrypt json file
+safejson.decrypt('encrypted.json', 'decrypted.json', 'your-secret-key');
+
 ```
 
 ## Contributing
