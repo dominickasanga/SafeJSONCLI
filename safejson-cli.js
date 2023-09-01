@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const commander = require('commander');
-const { encrypt, decrypt } = require('./safejson'); // Replace with your actual encryption/decryption functions
+const { encrypt, decrypt } = require('.'); // Replace with your actual encryption/decryption functions
 
 commander
   .version('1.0.0')
