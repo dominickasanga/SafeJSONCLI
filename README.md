@@ -28,6 +28,12 @@ To encrypt a JSON file:
 ```shell
 ./safejson-cli.js encrypt input.json encrypted.json your-secret-key
 ```
+To decrypt a JSON file:
+
+```shell
+./safejson-cli.js decrypt encrypted.json decrypted.json your-secret-key
+```
+
 ## Contributing
 
 We welcome contributions! Please read our contribution guidelines for details.
