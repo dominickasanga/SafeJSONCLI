@@ -1,72 +1,131 @@
-const fs = require('fs');
+// crypto.createCipheriv() method
+// Includes crypto module
 const crypto = require('crypto');
-const path = require('path');
 
-function ensureDirectoryExists(directory) {
-  if (!fs.existsSync(directory)) {
-    fs.mkdirSync(directory, { recursive: true });
+function generateRandomString(length) {
+    const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let result = '';
+  
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      result += characters.charAt(randomIndex);
+    }
+  
+    return result;
   }
+
+function encrypt(inputData, password) {
+    return new Promise((resolve, reject) => {
+        // Defining algorithm
+        const algorithm = 'aes-192-cbc';
+
+        // Generating salt
+        const salt = generateRandomString(4);
+
+        // Defining key
+        const key = crypto.scryptSync(password, salt, 24);
+
+        // Defining iv
+        const iv = Buffer.alloc(16, 0);
+
+        // Creating cipher
+        const cipher = crypto.createCipheriv(algorithm, key, iv);
+
+        // Declaring encrypted
+        let encrypted = '';
+
+        // Reading data
+        cipher.on('readable', () => {
+            let chunk;
+            while (null !== (chunk = cipher.read())) {
+                encrypted += chunk.toString('base64');
+            }
+        });
+
+        // Handling end event
+        cipher.on('end', () => {
+            resolve({ "encrypted":encrypted, "salt": salt });
+        });
+
+        // Handling error event
+        cipher.on('error', (error) => {
+            reject(error);
+        });
+
+        // Writing data
+        cipher.write(inputData);
+        cipher.end();
+    });
 }
 
-function encrypt(inputFile, outputFile, encryptionKey) {
-  try {
-    const jsonData = JSON.parse(fs.readFileSync(inputFile, 'utf8'));
-    const dataToEncrypt = JSON.stringify(jsonData);
+function decrypt(encrypted, salt, password) {
+    return new Promise((resolve, reject) => {
+        // Defining algorithm
+        const algorithm = 'aes-192-cbc';
 
-    const cipher = crypto.createCipher('aes-256-cbc', encryptionKey);
+        // Defining key
+        const key = crypto.scryptSync(password, salt, 24);
 
-    let encryptedData = cipher.update(dataToEncrypt, 'utf8', 'hex');
-    encryptedData += cipher.final('hex');
+        // Defining iv
+        const iv = Buffer.alloc(16, 0);
 
-    // Ensure the directory for the output file exists
-    const outputDir = path.dirname(outputFile);
-    ensureDirectoryExists(outputDir);
+        // Creating decipher
+        const decipher = crypto.createDecipheriv(algorithm, key, iv);
 
-    fs.writeFileSync(outputFile, encryptedData, 'utf8');
+        // Declaring decrypted
+        let decrypted = '';
 
-    console.log(`JSON data encrypted and saved to ${outputFile}`);
-  } catch (error) {
-    console.error('Encryption failed:', error);
-    throw error; // Re-throw the error to indicate failure
-  }
+        // Reading data
+        decipher.on('readable', () => {
+            let chunk;
+            while (null !== (chunk = decipher.read())) {
+                decrypted += chunk.toString('utf8');
+            }
+        });
+
+        // Handling end event
+        decipher.on('end', () => {
+            resolve(decrypted);
+        });
+
+        // Handling error event
+        decipher.on('error', (error) => {
+            reject(error);
+        });
+
+        // Writing and decoding the encrypted data
+        try {
+            decipher.write(encrypted, 'base64');
+            decipher.end();
+        } catch (error) {
+            reject(error);
+        }
+    });
 }
 
-function decrypt(inputFile, outputFile, decryptionKey) {
-  try {
-    const encryptedData = fs.readFileSync(inputFile, 'utf8');
+// Example usage:
+const inputData = 'Hello, World!';
+const password = 'MySecretPassword';
 
-    const decipher = crypto.createDecipheriv('aes-256-cbc', decryptionKey);
+encrypt(inputData, password)
+    .then(({ encrypted, salt }) => {
+        console.log('Encrypted Data:', encrypted);
+        console.log('Salt:', salt);
+    })
+    .catch((error) => {
+        console.error('Encryption Error:', error);
+    });
 
-    let decryptedData = decipher.update(encryptedData, 'hex', 'utf8');
-    decryptedData += decipher.final('utf8');
+const encryptedData = 'stC3vTZy2cNBb7JUevsl7Q==' // Replace with your encrypted data
+const salt = 'MFWM'
 
-    // Ensure the directory for the output file exists
-    const outputDir = path.dirname(outputFile);
-    ensureDirectoryExists(outputDir);
+decrypt(encryptedData, salt, password)
+    .then((decryptedData) => {
+        console.log('Decrypted Data:', decryptedData);
+    })
+    .catch((error) => {
+        console.error('Decryption Error:', error);
+    });
 
-    fs.writeFileSync(outputFile, decryptedData, 'utf8');
+module.exports = { encrypt, decrypt };
 
-    console.log(`JSON data decrypted and saved to ${outputFile}`);
-  } catch (error) {
-    console.error('Decryption failed:', error);
-    throw error; // Re-throw the error to indicate failure
-  }
-}
-
-function getDecryptedContents(inputFile, decryptionKey) {
-  try {
-    const encryptedData = fs.readFileSync(inputFile, 'utf8');
-
-    const decipher = crypto.createDecipheriv('aes-256-cbc', decryptionKey);
-
-    let decryptedData = decipher.update(encryptedData, 'hex', 'utf8');
-    decryptedData += decipher.final('utf8');
-
-    return decryptedData;
-  } catch (error) {
-    console.error('Failed to retrieve decrypted contents:', error);
-    throw error; // Re-throw the error to indicate failure
-  }
-}
-
-module.exports = { encrypt, decrypt, getDecryptedContents };

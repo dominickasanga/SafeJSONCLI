@@ -33,12 +33,7 @@ To encrypt a JSON file:
 To decrypt a JSON file:
 
 ```shell
-./safejson-cli.js decrypt encrypted.json decrypted.json your-secret-key
-```
-To decrypt a JSON file and get the output in cli:
-
-```shell
-./safejson-cli.js getDecryptedContents encrypted.json your-secret-secret
+./safejson-cli.js decrypt encrypted.json decrypted.json salt--key-for-encryptedJson your-secret-key
 ```
 
 ### how to use it in your node app:
@@ -51,14 +46,35 @@ npm i safejsoncli
 const safejson = require('safejsoncli');
 
 // to encrypt json file
-safejson.encrypt('input.json', 'encrypted.json', 'your-secret-key');
+// Example usage:
+const inputData = 'Hello, World!';
+const password = 'MySecretPassword';
+
+encrypt(inputData, password)
+    .then(({ encrypted, salt }) => {
+        console.log('Encrypted Data:', encrypted);
+        console.log('Salt:', salt);
+    })
+    .catch((error) => {
+        console.error('Encryption Error:', error);
+    });
+```
+```shell
+const safejson = require('safejsoncli');
 
 // to decrypt json file
-safejson.decrypt('encrypted.json', 'decrypted.json', 'your-secret-key');
+// Example usage:
+const encryptedData = '...' // Replace with your encrypted data
+const salt = '...'
+const password = 'MySecretPassword';
 
-// to decrypt json file
-safejson.getDecryptedContents('encrypted.json', 'your-secret-key');
-
+decrypt(encryptedData, salt, password)
+    .then((decryptedData) => {
+        console.log('Decrypted Data:', decryptedData);
+    })
+    .catch((error) => {
+        console.error('Decryption Error:', error);
+    });
 ```
 
 ## Contributing 
