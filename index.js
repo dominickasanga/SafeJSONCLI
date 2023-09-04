@@ -103,29 +103,4 @@ function decrypt(encrypted, salt, password) {
     });
 }
 
-// Example usage:
-const inputData = 'Hello, World!';
-const password = 'MySecretPassword';
-
-encrypt(inputData, password)
-    .then(({ encrypted, salt }) => {
-        console.log('Encrypted Data:', encrypted);
-        console.log('Salt:', salt);
-    })
-    .catch((error) => {
-        console.error('Encryption Error:', error);
-    });
-
-const encryptedData = 'stC3vTZy2cNBb7JUevsl7Q==' // Replace with your encrypted data
-const salt = 'MFWM'
-
-decrypt(encryptedData, salt, password)
-    .then((decryptedData) => {
-        console.log('Decrypted Data:', decryptedData);
-    })
-    .catch((error) => {
-        console.error('Decryption Error:', error);
-    });
-
 module.exports = { encrypt, decrypt };
-
