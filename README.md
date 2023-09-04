@@ -50,7 +50,7 @@ const safejson = require('safejsoncli');
 const inputData = 'Hello, World!';
 const password = 'MySecretPassword';
 
-encrypt(inputData, password)
+safejson.encrypt(inputData, password)
     .then(({ encrypted, salt }) => {
         console.log('Encrypted Data:', encrypted);
         console.log('Salt:', salt);
@@ -68,7 +68,7 @@ const encryptedData = '...' // Replace with your encrypted data
 const salt = '...'
 const password = 'MySecretPassword';
 
-decrypt(encryptedData, salt, password)
+safejson.decrypt(encryptedData, salt, password)
     .then((decryptedData) => {
         console.log('Decrypted Data:', decryptedData);
     })
